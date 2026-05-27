@@ -1,9 +1,1 @@
-pandas
-numpy
-matplotlib
-scikit-learn
-streamlit
-fastapi
-uvicorn
-mlflow
-psycopg2-binary
+
