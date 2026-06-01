@@ -1,0 +1,93 @@
+# Neural Retail PostgreeSQL Queries  
+
+This project contains SQL queries and views created on a retail dataset (`retail_data` table).  
+The goal was to analyze sales, customers, products, and revenue trends.
+
+## 📊 Queries Implemented
+1. **Total Revenue** – SUM of all sales
+2. **Total Customers** – Count of distinct customers
+3. **Top 10 Customers** – Highest revenue contributors
+4. **Top 10 Products** – Most sold products
+5. **Revenue by Country** – Country-wise revenue distribution
+6. **Daily Sales Trend** – Sales trend over time
+
+## 🗂️ SQL Views
+7. **Top Customers View** – Reusable view for customer revenue
+8. **Top Products View** – Reusable view for product sales
+9. **Country Revenue View** – Reusable view for country-wise revenue
+10. **Daily Sales Trend View** – Reusable view for daily sales
+
+# Queries 
+-- ===========================
+-- Retail SQL Analysis Script
+-- ===========================
+
+-- 1. Total Revenue
+SELECT SUM(totalprice) AS total_revenue
+FROM retail_data;
+
+-- 2. Total Customers
+SELECT COUNT(DISTINCT Customerid) AS total_customers
+FROM retail_data;
+
+-- 3. Top 10 Customers
+SELECT Customerid, SUM(totalPrice) AS revenue
+FROM retail_data
+GROUP BY Customerid
+ORDER BY revenue DESC
+LIMIT 10;
+
+-- 4. Top 10 Products
+SELECT description, SUM(quantity) AS total_quantity
+FROM retail_data
+GROUP BY description
+ORDER BY total_quantity DESC
+LIMIT 10;
+
+-- 5. Revenue by Country
+SELECT Country, SUM(totalprice) AS revenue
+FROM retail_data
+GROUP BY Country
+ORDER BY revenue DESC;
+
+-- 6. Daily Sales Trend
+SELECT DATE(invoicedate) AS sales_date, SUM(totalprice) AS daily_sales
+FROM retail_data
+GROUP BY sales_date
+ORDER BY sales_date;
+
+-- ===========================
+-- SQL Views for Reusability
+-- ===========================
+
+-- 7. Top Customers View
+CREATE OR REPLACE VIEW top_customers_view AS
+SELECT customerid, SUM(totalprice) AS revenue
+FROM retail_data
+GROUP BY customerid
+ORDER BY revenue DESC;
+SELECT * FROM top_customers_view LIMIT 10;
+
+-- 8. Top Products View
+CREATE OR REPLACE VIEW top_products_view AS
+SELECT description, SUM(quantity) AS total_quantity
+FROM retail_data
+GROUP BY description
+ORDER BY total_quantity DESC;
+SELECT * FROM top_products_view LIMIT 10;
+
+-- 9. Country Revenue View
+CREATE OR REPLACE VIEW country_revenue_view AS
+SELECT country, SUM(totalprice) AS revenue
+FROM retail_data
+GROUP BY country
+ORDER BY revenue DESC;
+SELECT * FROM country_revenue_view LIMIT 10;
+
+-- 10. Daily Sales Trend View
+CREATE OR REPLACE VIEW daily_sales_view AS
+SELECT DATE(invoicedate) AS sales_date, SUM(totalprice) AS daily_sales
+FROM retail_data
+GROUP BY sales_date
+ORDER BY sales_date;
+SELECT * FROM daily_sales_view LIMIT 10;
